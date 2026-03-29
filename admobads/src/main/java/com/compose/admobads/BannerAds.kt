@@ -460,6 +460,179 @@ fun InlineMediumNativeAd(
     }
 }
 
+/**
+ * Rectangular Banner Ad (300x250 Medium Rectangle)
+ * Perfect for in-feed placements and content breaks.
+ */
+@Composable
+fun RectangularBannerAd(
+    isEnabled: Boolean = true,
+    adUnitId: String = "ca-app-pub-3940256099942544/6300978111",
+    onAdLoaded: () -> Unit = {},
+    onAdFailed: (LoadAdError) -> Unit = {}
+) {
+    if (!isEnabled) return
+
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val isConnected = isInternetAvailable(context)
+
+    if (!isConnected) return
+
+    var isLoading by remember { mutableStateOf(true) }
+
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        if (isLoading) {
+            MediumRectangleShimmerEffect()
+        }
+
+        AndroidView(
+            modifier = Modifier.fillMaxWidth(),
+            factory = { ctx ->
+                AdView(ctx).apply {
+                    this.adUnitId = adUnitId
+                    setAdSize(AdSize.MEDIUM_RECTANGLE)
+
+                    adListener = object : AdListener() {
+                        override fun onAdLoaded() {
+                            isLoading = false
+                            onAdLoaded()
+                        }
+
+                        override fun onAdFailedToLoad(adError: LoadAdError) {
+                            isLoading = false
+                            onAdFailed(adError)
+                        }
+                    }
+
+                    loadAd(AdRequest.Builder().build())
+                }
+            }
+        )
+    }
+}
+
+/**
+ * Bottom Collapsible Banner Ad.
+ * Anchored at the bottom of the screen, collapses after user interaction.
+ */
+@Composable
+fun BottomCollapsibleBanner(
+    adUnitId: String = "ca-app-pub-3940256099942544/9214589741",
+    onAdLoaded: () -> Unit = {},
+    onAdFailed: (LoadAdError) -> Unit = {}
+) {
+    var isLoading by remember { mutableStateOf(true) }
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val isConnected = isInternetAvailable(context)
+
+    if (!isConnected) return
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White)
+    ) {
+        if (isLoading) {
+            BannerShimmerEffect()
+        }
+
+        AndroidView(
+            modifier = Modifier.fillMaxWidth(),
+            factory = { ctx ->
+                AdView(ctx).apply {
+                    this.adUnitId = adUnitId
+
+                    val display = (context as? android.app.Activity)?.windowManager?.defaultDisplay
+                    val outMetrics = android.util.DisplayMetrics()
+                    display?.getMetrics(outMetrics)
+                    val widthPixels = outMetrics.widthPixels.toFloat()
+                    val density = outMetrics.density
+                    val adWidth = (widthPixels / density).toInt()
+                    setAdSize(AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(ctx, adWidth))
+
+                    adListener = object : AdListener() {
+                        override fun onAdLoaded() {
+                            isLoading = false
+                            onAdLoaded()
+                        }
+
+                        override fun onAdFailedToLoad(adError: LoadAdError) {
+                            isLoading = false
+                            onAdFailed(adError)
+                        }
+                    }
+
+                    val extras = Bundle()
+                    extras.putString("collapsible", "bottom")
+
+                    val adRequest = AdRequest.Builder()
+                        .addNetworkExtrasBundle(AdMobAdapter::class.java, extras)
+                        .build()
+
+                    loadAd(adRequest)
+                }
+            }
+        )
+    }
+}
+
+/**
+ * Large Banner Ad (320x100).
+ * Twice the height of a standard banner.
+ */
+@Composable
+fun LargeBannerAd(
+    isEnabled: Boolean = true,
+    adUnitId: String = "ca-app-pub-3940256099942544/6300978111",
+    onAdLoaded: () -> Unit = {},
+    onAdFailed: (LoadAdError) -> Unit = {}
+) {
+    if (!isEnabled) return
+
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val isConnected = isInternetAvailable(context)
+
+    if (!isConnected) return
+
+    var isLoading by remember { mutableStateOf(true) }
+
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        if (isLoading) {
+            BannerShimmerEffect()
+        }
+
+        AndroidView(
+            modifier = Modifier.fillMaxWidth(),
+            factory = { ctx ->
+                AdView(ctx).apply {
+                    this.adUnitId = adUnitId
+                    setAdSize(AdSize.LARGE_BANNER)
+
+                    adListener = object : AdListener() {
+                        override fun onAdLoaded() {
+                            isLoading = false
+                            onAdLoaded()
+                        }
+
+                        override fun onAdFailedToLoad(adError: LoadAdError) {
+                            isLoading = false
+                            onAdFailed(adError)
+                        }
+                    }
+
+                    loadAd(AdRequest.Builder().build())
+                }
+            }
+        )
+    }
+}
+
 // Shimmer Effects
 
 @Composable

@@ -51,10 +51,10 @@ dependencies {
     implementation(libs.androidx.compose.runtime)
 
     // AdMob SDK
-    implementation("com.google.android.gms:play-services-ads:23.6.0")
+    api("com.google.android.gms:play-services-ads:23.6.0")
 
     // User Messaging Platform (Consent Form)
-    implementation("com.google.android.ump:user-messaging-platform:3.1.0")
+    api("com.google.android.ump:user-messaging-platform:3.1.0")
 
     // CardView for Native Ad layout
     implementation("androidx.cardview:cardview:1.0.0")
